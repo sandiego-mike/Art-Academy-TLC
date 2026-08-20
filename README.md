@@ -47,3 +47,19 @@ The original course sequence was expanded from the uploaded 9th Grade Visual Art
 - Four-level Week 1 rubric
 - Previous/next week lesson navigation
 - Resettable local progress
+
+
+## V3 complete course
+Every one of the 36 weeks now includes a consistent self-guided learning flow:
+- Learning objectives
+- Week-specific art vocabulary
+- Featured-artist analysis prompts
+- A technique to borrow from the artist
+- Mini lecture
+- Guided practice sequence
+- Three-question knowledge check with revealable answers
+- Studio assignment and materials
+- Interactive success checklist
+- Four-level rubric
+- Saved student reflection
+- Previous/next week navigation
