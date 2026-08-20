@@ -35,3 +35,15 @@ All course content is stored near the top of `app.js` in the `WEEKS` data array.
 - materials
 
 The original course sequence was expanded from the uploaded 9th Grade Visual Arts 1 homeschool syllabus.
+
+
+## V2 learning experience
+- Personalized student dashboard and Continue Course button
+- Expanded Week 1 self-guided lesson
+- Illustrated seven Elements of Art reference cards
+- Kandinsky "Look Closer" analysis prompts
+- Student-facing learning objectives
+- Guided studio demonstration
+- Four-level Week 1 rubric
+- Previous/next week lesson navigation
+- Resettable local progress

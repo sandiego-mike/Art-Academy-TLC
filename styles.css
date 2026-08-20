@@ -24,3 +24,57 @@ dialog{width:min(1040px,94vw);max-height:92vh;border:0;padding:0;background:var(
 .progress-panel{padding:55px}.progress-panel h2{font-size:52px;margin:10px 0}.progress-big{display:flex;align-items:baseline;gap:12px;margin-top:26px}.progress-big strong{font-family:"Playfair Display";font-size:56px}.progress-big span{color:var(--muted)}.progress-bar{height:12px;background:#ddd5c8;margin:12px 0 30px}.progress-bar i{display:block;height:100%;width:0;background:var(--sage);transition:.3s}.progress-list{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.progress-item{padding:10px;border:1px solid var(--line);font-size:12px}.progress-item.done{background:#e3e9dd;border-color:#c5d0bd}
 @media(max-width:900px){nav a{display:none}.hero{grid-template-columns:1fr;padding-top:50px}.hero-art{min-height:430px}.section-heading{align-items:start;flex-direction:column}.quarter-grid{grid-template-columns:1fr 1fr}.info-grid{grid-template-columns:1fr}.week-grid{grid-template-columns:1fr 1fr}.portfolio-section{grid-template-columns:1fr}.dialog-hero{grid-template-columns:1fr}.dialog-image{height:320px}.lesson-grid{grid-template-columns:1fr}}
 @media(max-width:620px){.hero h1{font-size:58px}.hero{min-height:auto;padding-bottom:55px}.hero-actions{align-items:flex-start;flex-direction:column}.quarter-grid,.week-grid,.portfolio-frame{grid-template-columns:1fr}.controls{align-items:stretch;flex-direction:column}.search input{width:100%}.artist-box{grid-template-columns:1fr}.dialog-hero-copy,.dialog-body,.progress-panel{padding:32px 24px}.dialog-hero h2{font-size:42px}.progress-list{grid-template-columns:1fr 1fr}.portfolio-stats{flex-wrap:wrap}footer{flex-direction:column}}
+
+
+/* ===== Art Academy TLC V2 learning experience ===== */
+.dashboard-section{padding-top:28px;padding-bottom:28px;background:var(--paper)}
+.dashboard-card{display:grid;grid-template-columns:1.3fr .7fr;gap:32px;align-items:center;background:var(--card);border:1px solid var(--line);padding:30px 34px}
+.dashboard-card h2{font-family:"Playfair Display";font-size:42px;line-height:1;margin:8px 0 10px}
+.dashboard-card p{margin:0;max-width:680px;color:var(--muted)}
+.dashboard-progress{display:flex;align-items:center;justify-content:flex-end;gap:24px}
+.dashboard-ring{width:118px;height:118px;border-radius:50%;border:10px solid #e4ddd1;display:grid;place-items:center;align-content:center}
+.dashboard-ring strong{font-family:"Playfair Display";font-size:30px;line-height:1}
+.dashboard-ring span{font-size:11px;color:var(--muted)}
+.dashboard-actions{display:flex;flex-direction:column;gap:9px}
+.ghost-btn{border:1px solid var(--line);background:transparent;border-radius:999px;padding:11px 17px;font:600 13px inherit;cursor:pointer}
+.lesson-kicker{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.16em}
+.lesson-section{padding:34px 0;border-top:1px solid var(--line)}
+.lesson-section:first-of-type{border-top:0}
+.lesson-section h3{font-family:"Playfair Display";font-size:30px;margin:0 0 10px}
+.lesson-section>p{color:var(--muted);max-width:800px}
+.elements-grid,.notice-grid,.rubric-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.elements-grid{grid-template-columns:repeat(4,1fr)}
+.element-card{min-height:178px;border:1px solid var(--line);background:#fffdf8;padding:16px;display:flex;flex-direction:column;justify-content:space-between}
+.element-icon{height:70px;display:grid;place-items:center;background:#eee6da;margin-bottom:14px;overflow:hidden}
+.element-icon svg{width:100%;height:100%}
+.element-card b{font-family:"Playfair Display";font-size:21px}
+.element-card p{font-size:12px;color:var(--muted);margin:6px 0 0}
+.look-closer{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-items:start}
+.look-image{background:#ddd4c7;min-height:340px;overflow:hidden}
+.look-image img{width:100%;height:100%;object-fit:cover}
+.notice-card,.rubric-card{background:#fffdf8;border:1px solid var(--line);padding:18px}
+.notice-card strong{display:block;margin-bottom:6px}
+.notice-card p,.rubric-card p{font-size:13px;color:var(--muted);margin:0}
+.demo-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:18px}
+.demo-step{background:#1f1e1b;color:#f4eee4;padding:18px;min-height:155px}
+.demo-step span{display:block;color:#d7a75f;font-size:12px;font-weight:700;margin-bottom:25px}
+.demo-step b{font-family:"Playfair Display";font-size:19px}
+.demo-step p{font-size:12px;color:#d4cdc2}
+.lesson-nav{display:flex;justify-content:space-between;gap:12px;margin-top:30px}
+.lesson-nav button{border:1px solid var(--line);background:var(--card);padding:13px 18px;font:600 14px inherit;cursor:pointer}
+.lesson-nav button:disabled{opacity:.35;cursor:not-allowed}
+.lesson-nav .next{background:var(--ink);color:white;border-color:var(--ink)}
+.rubric-card strong{display:block;color:var(--accent);font-size:12px;letter-spacing:.08em}
+.rubric-card b{display:block;margin:6px 0}
+.teacher-note{background:#efe7da;border-left:4px solid var(--gold);padding:18px 20px;margin-top:18px}
+.teacher-note strong{display:block;margin-bottom:5px}
+.objectives-list{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px;padding-left:20px}
+@media(max-width:900px){
+  .dashboard-card{grid-template-columns:1fr}.dashboard-progress{justify-content:flex-start}
+  .elements-grid{grid-template-columns:1fr 1fr}.look-closer{grid-template-columns:1fr}.demo-strip{grid-template-columns:1fr 1fr}
+}
+@media(max-width:620px){
+  .dashboard-progress{align-items:flex-start;flex-direction:column}
+  .elements-grid,.notice-grid,.rubric-grid,.demo-strip,.objectives-list{grid-template-columns:1fr}
+  .dashboard-card h2{font-size:34px}
+}
