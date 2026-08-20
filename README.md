@@ -63,3 +63,15 @@ Every one of the 36 weeks now includes a consistent self-guided learning flow:
 - Four-level rubric
 - Saved student reflection
 - Previous/next week navigation
+
+
+## Production-ready polish
+- Resume the most recently opened unfinished lesson
+- Quarter-by-quarter progress summary
+- Printable / Save-as-PDF evaluator progress report
+- Saved student reflections included in the report
+- Improved artwork image fallbacks
+- Keyboard focus visibility
+- Reduced-motion accessibility support
+- Better full-screen mobile lesson presentation
+- Print styles

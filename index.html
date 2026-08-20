@@ -13,7 +13,7 @@
 <body>
   <header class="topbar">
     <a class="brand" href="#top" aria-label="Art Academy TLC home"><span class="brand-mark">A</span><span>Art Academy TLC</span></a>
-    <nav>
+    <nav aria-label="Primary navigation">
       <a href="#course">Course</a><a href="#weeks">Weeks</a><a href="#portfolio">Portfolio</a>
       <button id="progressBtn" class="pill-btn" type="button">My progress</button>
     </nav>
@@ -139,6 +139,10 @@
       <p>Your checks are saved on this device.</p>
       <div class="progress-big"><strong id="progressPct">0%</strong><span>course complete</span></div>
       <div class="progress-bar"><i id="progressBar"></i></div>
+      <div class="report-actions">
+        <button id="printReportBtn" class="primary-btn" type="button">Print / Save progress report</button>
+      </div>
+      <div id="quarterSummary" class="quarter-summary"></div>
       <div id="progressList" class="progress-list"></div>
     </div>
   </dialog>
