@@ -2069,6 +2069,7 @@ function universalRubric(w){
 }
 
 function openWeek(num){
+  localStorage.setItem('artAcademyLastWeek', String(num));
   const w=WEEKS.find(x=>x.week===num), done=getDone().includes(num);
   const p=learningPack(w);
   const objectives=universalObjectives(w,p);
@@ -2118,7 +2119,7 @@ function openWeek(num){
         <span class="lesson-kicker">LOOK CLOSER</span>
         <h3>What to notice in the masterwork</h3>
         <div class="look-closer">
-          <div class="look-image"><img src="${w.image}" alt="${esc(w.work)}"></div>
+          <div class="look-image"><img src="${w.image}" alt="${esc(w.work)}" loading="lazy"></div>
           <div class="notice-grid">${p.notices.map(n=>`
             <article class="notice-card"><strong>${esc(n[0])}</strong><p>${esc(n[1])}</p></article>`).join('')}</div>
         </div>
@@ -2223,10 +2224,25 @@ function toggleDone(num){
 }
 
 function updateProgress(){
-  const done=getDone(); const pct=Math.round(done.length/WEEKS.length*100);
+  const done=getDone();
+  const pct=Math.round(done.length/WEEKS.length*100);
   document.getElementById('progressPct').textContent=pct+'%';
   document.getElementById('progressBar').style.width=pct+'%';
-  document.getElementById('progressList').innerHTML=WEEKS.map(w=>`<div class="progress-item ${done.includes(w.week)?'done':''}">W${w.week} · ${esc(w.title)}</div>`).join('');
+
+  const quarterSummary=document.getElementById('quarterSummary');
+  if(quarterSummary){
+    quarterSummary.innerHTML=[1,2,3,4].map(q=>{
+      const weeks=WEEKS.filter(w=>w.quarter===q);
+      const finished=weeks.filter(w=>done.includes(w.week)).length;
+      const qpct=Math.round(finished/weeks.length*100);
+      return `<article><span>Quarter ${q}</span><strong>${finished}/${weeks.length}</strong><small>${qpct}% complete</small></article>`;
+    }).join('');
+  }
+
+  document.getElementById('progressList').innerHTML=WEEKS.map(w=>
+    `<div class="progress-item ${done.includes(w.week)?'done':''}">
+      <span>W${w.week}</span> · ${esc(w.title)}
+    </div>`).join('');
 }
 
 tabs.forEach(t=>t.addEventListener('click',()=>{tabs.forEach(x=>x.classList.remove('active'));t.classList.add('active');activeQuarter=t.dataset.quarter;renderWeeks();}));
@@ -2237,10 +2253,73 @@ document.getElementById('progressBtn').addEventListener('click',()=>{updateProgr
 dialog.addEventListener('click',e=>{if(e.target===dialog)dialog.close()});
 progressDialog.addEventListener('click',e=>{if(e.target===progressDialog)progressDialog.close()});
 
+
+function printProgressReport(){
+  const done=getDone();
+  const lesson=lessonState();
+  const completed=WEEKS.filter(w=>done.includes(w.week));
+  const reflections=WEEKS
+    .map(w=>({week:w.week,title:w.title,text:lesson['reflection-'+w.week]||''}))
+    .filter(x=>x.text.trim());
+
+  const quarters=[1,2,3,4].map(q=>{
+    const weeks=WEEKS.filter(w=>w.quarter===q);
+    const finished=weeks.filter(w=>done.includes(w.week)).length;
+    return {q,finished,total:weeks.length};
+  });
+
+  const report=window.open('','_blank');
+  if(!report) return;
+
+  const quarterHtml=quarters.map(x=>
+    `<tr><td>Quarter ${x.q}</td><td>${x.finished} / ${x.total}</td><td>${Math.round(x.finished/x.total*100)}%</td></tr>`
+  ).join('');
+
+  const completedHtml=completed.length
+    ? completed.map(w=>`<li>Week ${w.week}: ${esc(w.title)}</li>`).join('')
+    : '<li>No weeks marked complete yet.</li>';
+
+  const reflectionHtml=reflections.length
+    ? reflections.map(r=>`<section><h3>Week ${r.week}: ${esc(r.title)}</h3><p>${esc(r.text)}</p></section>`).join('')
+    : '<p>No saved reflections yet.</p>';
+
+  report.document.write(`<!doctype html>
+<html><head><meta charset="utf-8"><title>Art Academy TLC Progress Report</title>
+<style>
+body{font-family:Arial,sans-serif;color:#222;margin:40px;line-height:1.45}
+h1{font-family:Georgia,serif;font-size:34px;margin-bottom:4px}
+h2{font-family:Georgia,serif;margin-top:30px;border-bottom:1px solid #bbb;padding-bottom:6px}
+h3{font-size:15px;margin-bottom:4px}
+.meta{color:#666;margin-bottom:25px}
+.summary{font-size:22px;margin:18px 0}
+table{border-collapse:collapse;width:100%;max-width:650px}
+th,td{border:1px solid #bbb;padding:8px;text-align:left}
+ul{columns:2;column-gap:35px;padding-left:20px}
+section{break-inside:avoid;margin-bottom:16px}
+footer{margin-top:40px;border-top:1px solid #bbb;padding-top:14px;color:#666;font-size:12px}
+@media print{body{margin:18mm}button{display:none}}
+</style></head><body>
+<h1>Art Academy TLC</h1>
+<div class="meta">Visual Arts 1 · 36-Week Studio Course · Student: Leilani · 2026–27</div>
+<div class="summary"><strong>${completed.length} of 36 weeks complete</strong> (${Math.round(completed.length/36*100)}%)</div>
+<h2>Quarter progress</h2>
+<table><thead><tr><th>Quarter</th><th>Weeks complete</th><th>Progress</th></tr></thead><tbody>${quarterHtml}</tbody></table>
+<h2>Completed lessons</h2><ul>${completedHtml}</ul>
+<h2>Saved reflections</h2>${reflectionHtml}
+<footer>Generated from the student's local Art Academy TLC progress data.</footer>
+<script>window.onload=()=>window.print();<\/script>
+</body></html>`);
+  report.document.close();
+}
+
 function updateDashboard(){
   const done=getDone();
   const pct=Math.round(done.length/WEEKS.length*100);
   const nextWeek=WEEKS.find(w=>!done.includes(w.week)) || WEEKS[WEEKS.length-1];
+  const lastOpened=Number(localStorage.getItem('artAcademyLastWeek') || 0);
+  const resumeWeek=(lastOpened && !done.includes(lastOpened) && WEEKS.some(w=>w.week===lastOpened))
+    ? WEEKS.find(w=>w.week===lastOpened)
+    : nextWeek;
   const pctEl=document.getElementById('dashboardPct');
   if(pctEl) pctEl.textContent=pct+'%';
   const title=document.getElementById('welcomeTitle');
@@ -2257,14 +2336,15 @@ function updateDashboard(){
     copy.textContent='You completed all 36 weeks. Open Week 36 to review your final exhibition checklist.';
     btn.textContent='Open Week 36';
   } else {
-    title.textContent=`Welcome back, Leilani — Week ${nextWeek.week} is next.`;
-    copy.textContent=nextWeek.focus;
-    btn.textContent=`Continue Week ${nextWeek.week}`;
+    title.textContent=`Welcome back, Leilani — Week ${resumeWeek.week} is ready.`;
+    copy.textContent=resumeWeek.focus;
+    btn.textContent=`Continue Week ${resumeWeek.week}`;
   }
-  btn.onclick=()=>openWeek(done.length===WEEKS.length ? 36 : nextWeek.week);
+  btn.onclick=()=>openWeek(done.length===WEEKS.length ? 36 : resumeWeek.week);
 }
 
 
+document.getElementById('printReportBtn')?.addEventListener('click', printProgressReport);
 document.getElementById('resetProgressBtn')?.addEventListener('click',()=>{
   if(confirm('Reset all completed-week checks on this device?')){
     setDone([]);
