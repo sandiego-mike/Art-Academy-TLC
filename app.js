@@ -2074,12 +2074,19 @@ function universalRubric(w){
   ];
 }
 
+function artworkImage(w){
+  // The former Week 3 Wikimedia filename was removed and returned a broken image.
+  if(w.week===3) return 'https://images.navigart.fr/1000/4C/32/4C32482.JPG';
+  return w.image;
+}
+
 function openWeek(num){
   localStorage.setItem('artAcademyLastWeek', String(num));
   const w=WEEKS.find(x=>x.week===num), done=getDone().includes(num);
   const p=learningPack(w);
   const objectives=universalObjectives(w,p);
   const rubric=universalRubric(w);
+  const imageSrc=artworkImage(w);
 
   dialogContent.innerHTML=`
     <div class="dialog-hero">
@@ -2090,7 +2097,7 @@ function openWeek(num){
         <div class="meta-row"><span class="meta-chip">⏱ ${esc(w.time)}</span><span class="meta-chip">Artist · ${esc(w.artist)}</span></div>
       </div>
       <div class="dialog-image">
-        <img src="${w.image}" alt="${esc(w.work)} by ${esc(w.artist)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
+        <img src="${imageSrc}" alt="${esc(w.work)} by ${esc(w.artist)}" onerror="this.style.display='none';this.nextElementSibling.style.display='grid'">
         <div class="fallback">${esc(w.work)}<br><small>${esc(w.artist)}</small></div>
       </div>
     </div>
@@ -2125,7 +2132,10 @@ function openWeek(num){
         <span class="lesson-kicker">LOOK CLOSER</span>
         <h3>What to notice in the masterwork</h3>
         <div class="look-closer">
-          <div class="look-image"><img src="${w.image}" alt="${esc(w.work)}" loading="lazy"></div>
+          <div class="look-image">
+            <img src="${imageSrc}" alt="${esc(w.work)}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.hidden=false">
+            <div class="look-fallback" hidden><strong>${esc(w.work)}</strong><small>Artwork reference unavailable</small></div>
+          </div>
           <div class="notice-grid">${p.notices.map(n=>`
             <article class="notice-card"><strong>${esc(n[0])}</strong><p>${esc(n[1])}</p></article>`).join('')}</div>
         </div>
