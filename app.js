@@ -2220,7 +2220,14 @@ function restoreLessonState(week){
 }
 
 function toggleDone(num){
-  let done=getDone(); done=done.includes(num)?done.filter(x=>x!==num):[...done,num].sort((a,b)=>a-b); setDone(done); renderWeeks(); updateDashboard(); openWeek(num);
+  let done=getDone();
+  const wasDone=done.includes(num);
+  done=wasDone?done.filter(x=>x!==num):[...done,num].sort((a,b)=>a-b);
+  setDone(done);
+  renderWeeks();
+  updateDashboard();
+  if(!wasDone && num < WEEKS.length) openWeek(num+1);
+  else openWeek(num);
 }
 
 function updateProgress(){
@@ -2325,6 +2332,7 @@ function updateDashboard(){
   const title=document.getElementById('welcomeTitle');
   const copy=document.getElementById('welcomeCopy');
   const btn=document.getElementById('continueBtn');
+  const heroBtn=document.getElementById('heroContinueBtn');
   if(!title || !copy || !btn) return;
 
   if(done.length===0){
@@ -2341,8 +2349,29 @@ function updateDashboard(){
     btn.textContent=`Continue Week ${resumeWeek.week}`;
   }
   btn.onclick=()=>openWeek(done.length===WEEKS.length ? 36 : resumeWeek.week);
+  if(heroBtn){
+    const target=done.length===WEEKS.length ? 36 : resumeWeek.week;
+    heroBtn.textContent=done.length ? `Continue Week ${target}` : 'Start Week 1';
+    heroBtn.onclick=()=>openWeek(target);
+  }
 }
 
+
+function setupWeekNavigation(){
+  const select=document.getElementById('weekSelect');
+  if(select){
+    select.innerHTML='<option value="">Choose Week 1–36…</option>'+WEEKS.map(w=>
+      `<option value="${w.week}">Week ${w.week}: ${esc(w.title)}</option>`
+    ).join('');
+    select.addEventListener('change',()=>{
+      if(select.value) openWeek(Number(select.value));
+      select.value='';
+    });
+  }
+  document.querySelectorAll('[data-open-week]').forEach(button=>{
+    button.addEventListener('click',()=>openWeek(Number(button.dataset.openWeek)));
+  });
+}
 
 document.getElementById('printReportBtn')?.addEventListener('click', printProgressReport);
 document.getElementById('resetProgressBtn')?.addEventListener('click',()=>{
@@ -2353,4 +2382,4 @@ document.getElementById('resetProgressBtn')?.addEventListener('click',()=>{
     updateDashboard();
   }
 });
-renderInfo(); renderWeeks(); updateDashboard();
+renderInfo(); renderWeeks(); setupWeekNavigation(); updateDashboard();
