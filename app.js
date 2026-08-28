@@ -2046,7 +2046,13 @@ function learningPack(w){
       demo: ["Plan seven clear spaces.","Make each example visually demonstrate its element.","Use more than one medium.","Write one sentence explaining the visual effect."]
     };
   }
-  return LESSON_PACKS[w.week] || {objectives:[],vocabulary:[],notices:[],borrow:"",reflection:"",quiz:[],demo:w.steps.slice(0,4)};
+  const pack=LESSON_PACKS[w.week];
+  if(!pack){
+    return {objectives:[],vocabulary:[],notices:[],borrow:"",reflection:"",quiz:[],demo:w.steps.slice(0,4)};
+  }
+  // Week 2–36 source packs use the shorter `vocab` key. Normalize it here
+  // so every lesson uses the same rendering contract as Week 1.
+  return {...pack,vocabulary:pack.vocabulary || pack.vocab || []};
 }
 
 function universalObjectives(w,p){
