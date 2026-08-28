@@ -36,6 +36,12 @@ dialog{width:min(1040px,94vw);max-height:92vh;border:0;padding:0;background:var(
 .dashboard-ring strong{font-family:"Playfair Display";font-size:30px;line-height:1}
 .dashboard-ring span{font-size:11px;color:var(--muted)}
 .dashboard-actions{display:flex;flex-direction:column;gap:9px}
+.week-jump{grid-column:1/-1;border-top:1px solid var(--line);padding-top:20px;display:grid;gap:10px}
+.week-jump-actions{display:flex;gap:10px;align-items:end;flex-wrap:wrap}
+.week-jump button,.week-jump select{min-height:44px;border:1px solid var(--line);background:#fff;padding:10px 14px;font:inherit;color:var(--ink);cursor:pointer}
+.week-jump button{font-weight:700}
+.week-jump label{display:grid;gap:5px;min-width:min(100%,330px)}
+.week-jump label span,.week-jump small{font-size:12px;color:var(--muted)}
 .ghost-btn{border:1px solid var(--line);background:transparent;border-radius:999px;padding:11px 17px;font:600 13px inherit;cursor:pointer}
 .lesson-kicker{color:var(--accent);font-size:12px;font-weight:700;letter-spacing:.16em}
 .lesson-section{padding:34px 0;border-top:1px solid var(--line)}
@@ -75,6 +81,9 @@ dialog{width:min(1040px,94vw);max-height:92vh;border:0;padding:0;background:var(
 }
 @media(max-width:620px){
   .dashboard-progress{align-items:flex-start;flex-direction:column}
+  .week-jump-actions{display:grid;grid-template-columns:1fr 1fr}
+  .week-jump label{grid-column:1/-1;min-width:0}
+  .week-jump select{width:100%}
   .elements-grid,.notice-grid,.rubric-grid,.demo-strip,.objectives-list{grid-template-columns:1fr}
   .dashboard-card h2{font-size:34px}
 }
