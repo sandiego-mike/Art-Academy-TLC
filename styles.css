@@ -124,13 +124,24 @@ button,a,.week-card{transition:transform .18s ease,box-shadow .18s ease,backgrou
 .quarter-summary small{color:var(--muted)}
 .art-fallback{display:none;min-height:340px;place-items:center;align-content:center;text-align:center;padding:30px;font-family:"Playfair Display";font-size:28px;color:#6d6459;background:#e2d9cb}
 .art-fallback small{display:block;font-family:"DM Sans";font-size:13px;margin-top:8px;color:var(--muted)}
+.look-fallback{min-height:220px;padding:24px;display:grid;place-items:center;align-content:center;gap:8px;text-align:center;background:#e2d9cb;color:#6d6459}
+.look-fallback[hidden]{display:none}
+.look-fallback strong{font-family:"Playfair Display";font-size:26px}
+.look-fallback small{color:var(--muted)}
 .dialog-body{scroll-margin-top:20px}
 dialog{border-radius:2px}
 .progress-item span{font-weight:700;color:var(--accent)}
 @media(max-width:700px){
   .quarter-summary{grid-template-columns:1fr 1fr}
-  dialog{width:100vw;max-height:100vh;height:100vh;margin:0}
-  .dialog-close{top:14px;right:14px}
+  dialog{inset:0;width:100vw;max-width:none;max-height:none;height:100dvh;margin:0;border-radius:0}
+  .dialog-close{position:fixed;top:max(12px,env(safe-area-inset-top));right:12px;width:44px;height:44px}
+  .dialog-hero{min-height:0}
+  .dialog-hero-copy{padding:34px 24px 28px}
+  .dialog-hero h2{font-size:clamp(38px,11vw,48px);line-height:.96;overflow-wrap:anywhere}
+  .dialog-image{height:230px;min-height:230px}
+  .dialog-image .fallback{height:230px;min-height:230px;padding:22px;font-size:27px}
+  .look-image img{max-height:360px;object-fit:contain;background:#e2d9cb}
+  .look-fallback{min-height:180px}
   .dialog-body{padding-bottom:70px}
 }
 @media(prefers-reduced-motion:reduce){
