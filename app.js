@@ -2075,8 +2075,9 @@ function universalRubric(w){
 }
 
 function artworkImage(w){
-  // The former Week 3 Wikimedia filename was removed and returned a broken image.
-  if(w.week===3) return 'https://images.navigart.fr/1000/4C/32/4C32482.JPG';
+  // Keep Week 3's required reference inside this course so it cannot be
+  // blocked, renamed, or removed by an external image host.
+  if(w.week===3) return 'assets/igor-stravinsky-picasso.jpg';
   return w.image;
 }
 
