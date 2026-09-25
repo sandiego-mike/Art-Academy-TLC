@@ -2172,6 +2172,16 @@ function openWeek(num){
       </section>
 
       <section class="lesson-section">
+        <span class="lesson-kicker">TLC WEEKLY WRITING</span>
+        <h3>Artist / instruction summary</h3>
+        <p>${esc(w.tlcWriting)}</p>
+        <div class="reflection-card">
+          <textarea data-writing="${w.week}" rows="5" placeholder="Write your weekly artist or art-instruction summary here…"></textarea>
+          <small>Saved automatically on this device. This provides the weekly writing evidence required by the TLC course outline.</small>
+        </div>
+      </section>
+
+      <section class="lesson-section">
         <span class="lesson-kicker">SELF-ASSESS</span>
         <h3>Success checklist</h3>
         <div class="success-grid">
@@ -2215,6 +2225,8 @@ function openWeek(num){
   dialogContent.querySelectorAll('[data-week-check]').forEach(el=>el.addEventListener('change',saveLessonState));
   const reflection=dialogContent.querySelector('[data-reflection]');
   if(reflection) reflection.addEventListener('input',saveLessonState);
+  const writing=dialogContent.querySelector('[data-writing]');
+  if(writing) writing.addEventListener('input',saveLessonState);
 }
 
 function lessonState(){
@@ -2226,6 +2238,8 @@ function saveLessonState(){
   dialogContent.querySelectorAll('[data-week-check]').forEach(el=>{state[el.dataset.weekCheck]=el.checked;});
   const reflection=dialogContent.querySelector('[data-reflection]');
   if(reflection) state['reflection-'+reflection.dataset.reflection]=reflection.value;
+  const writing=dialogContent.querySelector('[data-writing]');
+  if(writing) state['writing-'+writing.dataset.writing]=writing.value;
   localStorage.setItem('artAcademyLessonState',JSON.stringify(state));
 }
 
@@ -2234,6 +2248,8 @@ function restoreLessonState(week){
   dialogContent.querySelectorAll('[data-week-check]').forEach(el=>{el.checked=!!state[el.dataset.weekCheck];});
   const reflection=dialogContent.querySelector('[data-reflection]');
   if(reflection) reflection.value=state['reflection-'+week] || '';
+  const writing=dialogContent.querySelector('[data-writing]');
+  if(writing) writing.value=state['writing-'+week] || '';
 }
 
 function toggleDone(num){
