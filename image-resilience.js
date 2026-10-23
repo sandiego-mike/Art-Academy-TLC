@@ -1,8 +1,16 @@
 (()=>{
 'use strict';
 const API='https://commons.wikimedia.org/w/api.php';
-const LOCAL={
-  'Igor_Stravinsky_Essay.jpg':'assets/igor-stravinsky-picasso.jpg'
+const VERIFIED={
+  'Vassily_Kandinsky,_1923_-_Composition_8,_huile_sur_toile,_140_cm_x_201_cm,_Musée_Guggenheim,_New_York.jpg':'https://upload.wikimedia.org/wikipedia/commons/4/47/Vassily_Kandinsky%2C_1923_-_Composition_8%2C_huile_sur_toile%2C_140_cm_x_201_cm%2C_Mus%C3%A9e_Guggenheim%2C_New_York.jpg',
+  'Albrecht_Dürer_-_Praying_Hands,_1508_-_Google_Art_Project.jpg':'https://upload.wikimedia.org/wikipedia/commons/6/63/Albrecht_D%C3%BCrer_-_Praying_Hands%2C_1508_-_Google_Art_Project.jpg',
+  'Igor_Stravinsky_Essay.jpg':'assets/igor-stravinsky-picasso.jpg',
+  'The_Calling_of_Saint_Matthew-Caravaggo_(1599-1600).jpg':'https://upload.wikimedia.org/wikipedia/commons/4/48/The_Calling_of_Saint_Matthew-Caravaggo_%281599-1600%29.jpg',
+  'Paul_Cézanne_-_Still_Life_with_Apples_-_Google_Art_Project.jpg':'https://upload.wikimedia.org/wikipedia/commons/2/29/Paul_C%C3%A9zanne_-_Still_Life_with_Apples_-_Google_Art_Project.jpg',
+  'Giorgio_Morandi_-_Natura_morta_-_Google_Art_Project.jpg':'https://www.italymagazine.com/sites/default/files/inline-images/11-Natura-morta-Giorgio-Morandi.jpg',
+  'Jean_Siméon_Chardin_-_Still_Life_with_Attributes_of_the_Arts_-_WGA04784.jpg':'https://upload.wikimedia.org/wikipedia/commons/d/d8/Chardin%2C_Jean-Baptiste_Sim%C3%A9on_-_Still_Life_with_Attributes_of_the_Arts_-_1766.jpg',
+  'Las_Meninas_01.jpg':'https://upload.wikimedia.org/wikipedia/commons/9/99/Las_Meninas_01.jpg',
+  'Maman_(sculpture).jpg':'https://cdn.sanity.io/images/zcj3i1pm/production/32b4a8b05fb5f4b20f93af2058f6eb7707fe0e51-4000x3000.jpg?auto=format&fit=clip&q=75&w=1600'
 };
 const CACHE=new Map();
 function filenameFrom(src){
@@ -14,15 +22,13 @@ function filenameFrom(src){
 }
 function lessonQuery(img,filename){
   const alt=String(img.alt||'').replace(/\s+by\s+/i,' ');
-  const hero=img.closest('.dialog-hero');
-  const heroText=hero?hero.innerText:'';
   const fallback=img.nextElementSibling?.innerText||'';
   const fileText=String(filename||'').replace(/[_-]+/g,' ').replace(/\.[a-z0-9]+$/i,'');
-  return [alt,fallback,heroText,fileText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+  return [alt,fallback,fileText].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
 }
 async function exactCommons(filename){
   if(!filename)return '';
-  if(LOCAL[filename])return LOCAL[filename];
+  if(VERIFIED[filename])return VERIFIED[filename];
   const key='file:'+filename;
   if(CACHE.has(key))return CACHE.get(key);
   const url=`${API}?action=query&origin=*&format=json&prop=imageinfo&iiprop=url&iiurlwidth=1600&titles=${encodeURIComponent('File:'+filename)}`;
@@ -37,20 +43,15 @@ async function exactCommons(filename){
 }
 async function searchCommons(query){
   if(!query)return '';
-  const cleaned=query.replace(/\([^)]*\)/g,' ').replace(/\bweek\s+\d+\b/gi,' ').replace(/\s+/g,' ').trim();
+  const cleaned=query.replace(/\([^)]*\)/g,' ').replace(/\s+/g,' ').trim();
   const key='search:'+cleaned;
   if(CACHE.has(key))return CACHE.get(key);
-  const url=`${API}?action=query&origin=*&format=json&generator=search&gsrnamespace=6&gsrlimit=8&gsrsearch=${encodeURIComponent(cleaned)}&prop=imageinfo&iiprop=url&iiurlwidth=1600`;
+  const url=`${API}?action=query&origin=*&format=json&generator=search&gsrnamespace=6&gsrlimit=6&gsrsearch=${encodeURIComponent(cleaned)}&prop=imageinfo&iiprop=url&iiurlwidth=1600`;
   const r=await fetch(url,{cache:'force-cache'});
   if(!r.ok)throw new Error('Commons search failed');
   const data=await r.json();
-  const pages=Object.values(data?.query?.pages||{}).filter(p=>p?.imageinfo?.[0]);
-  const tokens=cleaned.toLowerCase().split(/[^a-z0-9]+/).filter(t=>t.length>3);
-  pages.sort((a,b)=>{
-    const score=p=>tokens.reduce((n,t)=>n+(String(p.title||'').toLowerCase().includes(t)?1:0),0);
-    return score(b)-score(a);
-  });
-  const info=pages[0]?.imageinfo?.[0];
+  const page=Object.values(data?.query?.pages||{}).find(p=>p?.imageinfo?.[0]);
+  const info=page?.imageinfo?.[0];
   const out=info?.thumburl||info?.url||'';
   CACHE.set(key,out);
   return out;
@@ -67,7 +68,7 @@ function showFallback(img){
   if(!next)return;
   next.hidden=false;
   next.style.display='grid';
-  next.innerHTML='<strong>Artwork reference unavailable</strong><small>Please reopen this week after refreshing the page.</small>';
+  next.innerHTML='<strong>Artwork reference unavailable</strong><small>This lesson needs a local replacement image.</small>';
 }
 function loadInto(img,url){
   return new Promise((ok,bad)=>{
@@ -86,14 +87,12 @@ async function repair(img){
   if(!filename)return;
   img.dataset.artRepair='working';
   img.referrerPolicy='no-referrer';
-  img.decoding='async';
   try{
     const exact=await exactCommons(filename);
     if(exact){await loadInto(img,exact);img.dataset.artRepair='done';return}
   }catch(e){}
   try{
-    const query=lessonQuery(img,filename);
-    const searched=await searchCommons(query);
+    const searched=await searchCommons(lessonQuery(img,filename));
     await loadInto(img,searched);
     img.dataset.artRepair='done';
   }catch(e){
